@@ -1,4 +1,9 @@
-namespace Bulky.Web
+using BulkyBook.DataAccesss.Data;
+using BulkyBook.DataAccesss.Repository;
+using BulkyBook.DataAccesss.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
+
+namespace BulkyBook.Web
 {
     public class Program
     {
@@ -9,6 +14,9 @@ namespace Bulky.Web
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -27,7 +35,7 @@ namespace Bulky.Web
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();
